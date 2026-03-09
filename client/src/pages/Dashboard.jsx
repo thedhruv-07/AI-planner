@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import API from "../api/axios";;
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:5000";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -48,13 +47,13 @@ const Dashboard = () => {
 
   // ================= FETCH TASKS =================
   const fetchTasks = async () => {
-  try {
-    const res = await API.get("/tasks");
-    setTasks(res.data);
-  } catch (error) {
-    console.error("Fetch Tasks Error:", error.response?.data?.message);
-  }
-};
+    try {
+      const res = await API.get("/tasks");
+      setTasks(res.data);
+    } catch (error) {
+      console.error("Fetch Tasks Error:", error.response?.data?.message);
+    }
+  };
 
   useEffect(() => {
     fetchTasks();
@@ -90,12 +89,7 @@ const Dashboard = () => {
   // ================= TOGGLE =================
   const toggleComplete = async (id) => {
     try {
-      const res = await axios.put(
-        `${API_URL}/api/tasks/${id}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
+      const res = await API.put(`/tasks/${id}`);
       setTasks((prev) =>
         prev.map((task) => (task._id === id ? res.data : task))
       );
@@ -110,11 +104,7 @@ const Dashboard = () => {
     if (!newTitle) return;
 
     try {
-      await axios.put(
-        `${API_URL}/api/tasks/edit/${id}`,
-        { title: newTitle },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await API.put(`/tasks/edit/${id}`, { title: newTitle });
       fetchTasks();
     } catch (error) {
       console.log(error.response?.data);
@@ -123,25 +113,25 @@ const Dashboard = () => {
 
   // ================= AI GENERATE =================
   const generatePlan = async () => {
-  if (!topic.trim()) return;
+    if (!topic.trim()) return;
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const res = await API.post("/ai/generate", { topic });
+      const res = await API.post("/ai/generate", { topic });
 
-    console.log("SUCCESS:", res.data);
+      console.log("SUCCESS:", res.data);
 
-    fetchTasks();
-    setTopic("");
-  } catch (error) {
-    console.log("FULL ERROR:", error);
-    console.log("ERROR RESPONSE:", error.response);
-    console.log("ERROR DATA:", error.response?.data);
-  } finally {
-    setLoading(false);
-  }
-};
+      fetchTasks();
+      setTopic("");
+    } catch (error) {
+      console.log("FULL ERROR:", error);
+      console.log("ERROR RESPONSE:", error.response);
+      console.log("ERROR DATA:", error.response?.data);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // ================= LOGOUT =================
   const logout = () => {
@@ -159,8 +149,8 @@ const Dashboard = () => {
     filter === "all"
       ? tasks
       : filter === "completed"
-      ? tasks.filter((t) => t.completed)
-      : tasks.filter((t) => !t.completed);
+        ? tasks.filter((t) => t.completed)
+        : tasks.filter((t) => !t.completed);
 
   return (
     <div className="min-h-screen flex bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-white">
@@ -269,11 +259,10 @@ const Dashboard = () => {
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`capitalize pb-2 border-b-2 transition ${
-                  filter === f
+                className={`capitalize pb-2 border-b-2 transition ${filter === f
                     ? "border-purple-600 text-purple-600"
                     : "border-transparent text-gray-500 dark:text-gray-400 hover:text-purple-600"
-                }`}
+                  }`}
               >
                 {f}
               </button>
@@ -289,9 +278,8 @@ const Dashboard = () => {
               >
                 <div
                   onClick={() => toggleComplete(task._id)}
-                  className={`cursor-pointer text-base sm:text-lg font-medium ${
-                    task.completed ? "line-through text-gray-400" : ""
-                  }`}
+                  className={`cursor-pointer text-base sm:text-lg font-medium ${task.completed ? "line-through text-gray-400" : ""
+                    }`}
                 >
                   {task.title}
                 </div>
