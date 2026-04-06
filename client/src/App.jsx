@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import Features from "./pages/Features";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function Landing() {
@@ -46,6 +47,9 @@ function App() {
 
       {/* Landing Page */}
       <Route path="/" element={<Landing />} />
+
+      {/* Features Page */}
+      <Route path="/features" element={<Features />} />
 
       {/* Auth Routes */}
       <Route path="/login" element={<Login />} />
